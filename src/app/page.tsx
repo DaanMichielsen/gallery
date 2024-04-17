@@ -1,5 +1,6 @@
-import { url } from "inspector";
-import Link from "next/link";
+import { db } from "~/server/db";
+
+export const dynamic = "force-dynamic";
 
 const images = [
   "https://utfs.io/f/610c9bb9-a29a-47bb-ac21-7c3cb07ee6f3-1r5u.svg",
@@ -13,13 +14,18 @@ const mockImages = images.map((image, index) => ({
   url: image,
 }));
 
+const post = await db.query.posts.findMany();
+
 export default function HomePage() {
   return (
     <main className="">
       <div className="flex flex-wrap gap-4">
+        {post.map((post) => (
+          <div key={post.id}>{post.name}</div>
+        ))}
         {[...mockImages, ...mockImages, ...mockImages, ...mockImages].map(
-          (image) => (
-            <div key={image.id} className="w-48">
+          (image, index) => (
+            <div key={image.id + "-" + index} className="w-48">
               <img src={image.url} alt="image" className="w-full" />
             </div>
           ),
